@@ -212,6 +212,18 @@ class LICHT(object):
             print("Fehler: Farbe %s nicht gefunden" % colorname)
             sys.exit(1)
 
+    def _dimm_percentage(self, percent):
+        """TODO: Docstring for _dimm_percentage.
+
+        :arg1: TODO
+        :returns: TODO
+
+        """
+        b = float(percent)
+        b = 255.0 / 100.0 * b
+        b = int(b)
+        return b
+
     def harmonisch_ausrasten(self, length):
         """
         Aus traditionellen Gruenden.
@@ -230,14 +242,15 @@ class LICHT(object):
             print x +",",
         return True
 
-    def farbe(self, colorname, transition=1):
+    def farbe(self, colorname, transition=1, brightness=100):
         """
         Aus traditionellen Gruenden.
         Purer Zufall, 20 mal.
         """
+        b = self._dimm_percentage(brightness)
         for l in self.lights:
             l.transitiontime = transition
-            l.brightness = 254
+            l.brightness = b
             l.xy = self._get_color(colorname)
         return True
 
@@ -258,9 +271,7 @@ class LICHT(object):
         return True
 
     def dimmen(self, percent):
-        b = float(percent)
-        b = 255.0 / 100.0 * b
-        b = int(b)
+        b = self._dimm_percentage(percent)
         for l in self.lights:
             l.brightness = b
 
@@ -294,28 +305,37 @@ class LICHT(object):
                 l.brightness = random.randrange(0, 255, 1)
         return True
 
-if __name__ == '__main__':
-    args = docopt(__doc__, version='k4cglicht 0.0.2')
-
-    if args["farbe"]:
-	    LICHT().farbe(args["<farbname>"])
-    if args["flackern"]:
-	    LICHT().flackern(int(args["<wechselzeit>"]))
-    if args["farben"]:
-        LICHT().allefarben()
-    if args["alarm"]:
+    def alarm(self):
         for x in range(1,7):
             LICHT().farbe("Red")
             time.sleep(0.5)
-            LICHT().farbe("White")
-    if args["blaulicht"]:
+            LICHT().farbe("Moccasin")
+
+    def blaulicht(self):
         for x in range(1,7):
             LICHT().farbe("Blue")
             time.sleep(0.5)
             LICHT().farbe("Moccasin")
+
+    def normal(self):
+        LICHT().farbe(colorname="Moccasin",brightness=59)
+
+if __name__ == '__main__':
+    args = docopt(__doc__, version='k4cglicht 0.0.2')
+
+    if args["farbe"]:
+        LICHT().farbe(args["<farbname>"])
+    if args["flackern"]:
+        LICHT().flackern(int(args["<wechselzeit>"]))
+    if args["farben"]:
+        LICHT().allefarben()
+    if args["alarm"]:
+        LICHT().alarm()
+    if args["blaulicht"]:
+        LICHT().blaulicht()
     if args["dimmen"]:
         LICHT().dimmen(args["<prozent>"])
     if args["harmonisch"]:
         LICHT().harmonisch_ausrasten(int(args["<dauer>"]))
     if args["normal"]:
-        LICHT().farbe("Moccasin")
+        LICHT().normal()
