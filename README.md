@@ -2,6 +2,15 @@
 
 CLI Interface for our K4CG Philips Hue Light
 
+### Install
+
+```
+git clone https://github.com/k4cg/k4cglicht
+cd k4cglicht
+pip install -r requirements.txt
+chmod +x k4cglicht
+```
+
 ### Usage
 
 ```
