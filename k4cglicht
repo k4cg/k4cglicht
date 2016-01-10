@@ -10,6 +10,7 @@ Usage:
   k4cglicht alieninvasion
   k4cglicht dimmen <prozent>
   k4cglicht normal
+  k4cglicht zufall
   k4cglicht harmonisch ausrasten <dauer>
 
 Options:
@@ -39,19 +40,10 @@ class LICHT(object):
     """Docstring for LICHT. """
 
     def __init__(self):
-        """
-        Bruecke und Lichter initalisieren
-        """
         self.bridge = Bridge("10.88.88.17")
         self.bridge.connect()
         self.lights = self.bridge.get_light_objects()
-
-    def _colors(self):
-        """
-        Farbe per Name abrufen.
-        Gibt Liste mit X und Y Koordinaten zurueck
-        """
-        colors = \
+        self.colors = \
         {
         'Blue': [0.139,0.081],
         'Pink': [0.3944,0.3093],
@@ -200,11 +192,9 @@ class LICHT(object):
         'Olive Drab': [0.354,0.5561]
         }
 
-        return colors
-
     def _get_color(self, colorname):
 
-        cols = self._colors()
+        cols = self.colors
         try:
             col = cols[colorname]
             return col
@@ -213,12 +203,6 @@ class LICHT(object):
             sys.exit(1)
 
     def _dimm_percentage(self, percent):
-        """TODO: Docstring for _dimm_percentage.
-
-        :arg1: TODO
-        :returns: TODO
-
-        """
         b = float(percent)
         b = 255.0 / 100.0 * b
         b = int(b)
@@ -236,9 +220,17 @@ class LICHT(object):
                 l.xy = [random.random(),random.random()]
         return True
 
+    def zufall(self, length=50):
+        for x in range(1, length):
+            for l in self.lights:
+                l.brightness = 254
+                l.transitiontime = 0.1
+                l.xy = self._get_color(random.choice(self.colors.keys()))
+        return True
+
     def allefarben(self):
         print("Alle verfuegbaren Farben:")
-        for x, v in self._colors().iteritems():
+        for x, v in self.colors.iteritems():
             print x +",",
         return True
 
@@ -254,71 +246,25 @@ class LICHT(object):
             l.xy = self._get_color(colorname)
         return True
 
-    def farbuebergang(self, length):
-        """
-        Geht alle Farben in maximaler Helligkeit durch
-        Symmetrisch.
-        l.xy = 0.1,0.1
-        l.xy = 0.8,0.8
-        """
-        for x in range(1,20):
-            x = float(x)
-            x = x / 10
-            time.sleep(0.5)
-            for l in self.lights:
-                l.brightness = 254
-                l.xy = [x,x]
-        return True
-
     def dimmen(self, percent):
         b = self._dimm_percentage(percent)
         for l in self.lights:
             l.brightness = b
 
-    def pulsieren(self, length):
-        """
-        Lichter gluehen auf und wieder ab
-        paar mal.
-        """
-        for y in range(1,length):
-            for x in range(0,254):
-                time.sleep(0.05)
-                for l in self.lights:
-                    l.brightness = x
-
-            for x in reversed(range(0,254)):
-                time.sleep(0.05)
-                for l in self.lights:
-                    l.brightness = x
-        return True
-
-
-    def flackern(self, transition):
-        """
-        Alle Lichtern flackern wie bloede
-        """
-        for x in range(1,11):
-            time.sleep(0.1)
-            for l in self.lights:
-                l.transitiontime = transition
-                time.sleep(3)
-                l.brightness = random.randrange(0, 255, 1)
-        return True
-
     def alarm(self):
         for x in range(1,7):
-            LICHT().farbe("Red")
+            self.farbe("Red")
             time.sleep(0.5)
-            LICHT().farbe("Moccasin")
+            self.farbe("Moccasin")
 
     def blaulicht(self):
         for x in range(1,7):
-            LICHT().farbe("Blue")
+            self.farbe("Blue")
             time.sleep(0.5)
-            LICHT().farbe("Moccasin")
+            self.farbe("Moccasin")
 
     def normal(self):
-        LICHT().farbe(colorname="Moccasin",brightness=59)
+        self.farbe(colorname="Moccasin",brightness=59)
 
 if __name__ == '__main__':
     args = docopt(__doc__, version='k4cglicht 0.0.2')
@@ -339,3 +285,6 @@ if __name__ == '__main__':
         LICHT().harmonisch_ausrasten(int(args["<dauer>"]))
     if args["normal"]:
         LICHT().normal()
+    if args["zufall"] or args["alieninvasion"]:
+        LICHT().zufall()
+
