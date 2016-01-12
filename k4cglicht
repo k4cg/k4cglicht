@@ -19,9 +19,9 @@ Options:
 """
 
 import sys
-from phue import Bridge
 import random
 import time
+from phue import Bridge
 from docopt import docopt
 
 
