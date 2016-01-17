@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-""" k4cglicht 0.0.2
+""" k4cglicht 0.0.2.1
 
 Usage:
   k4cglicht farbe <farbname>
@@ -11,6 +11,7 @@ Usage:
   k4cglicht normal
   k4cglicht zufall
   k4cglicht harmonisch ausrasten <dauer>
+  k4cglicht annoy <bulb> <times>
 
 Options:
   -h --help     HILFE!
@@ -250,6 +251,30 @@ class LICHT(object):
         return True
 
     ### effects... add new ones below here
+    def annoy(self, bulb, times):
+        """ Make one of the lights blink randomly
+        :returns: bool
+        """
+        # In case someone would like to test if bulblen is out of range
+        bulblen = len(self.lights)
+
+        l = self.lights[int(bulb)]
+        l.transitiontime = 0
+        # To avoid bugs with brightness that was previously set
+        cur_bri = l.brightness
+
+        for t in range(0, int(times)):
+            if t % 2:
+                l.on = True
+            else:
+                l.on = False
+
+            time.sleep(random.random())
+
+        l.on = True
+        l.brightness = cur_bri
+        return True
+
     def harmonisch_ausrasten(self, length):
         """ Make Hue lights blink very randomly
         besides from the colormap that is normally being used
@@ -328,4 +353,6 @@ if __name__ == '__main__':
         LICHT().default()
     if args["zufall"] or args["alieninvasion"]:
         LICHT().random_colors()
+    if args["annoy"]:
+        LICHT().annoy(args["<bulb>"], args["<times>"])
 

@@ -16,14 +16,16 @@ chmod +x k4cglicht
 ```
 Usage:
   k4cglicht farbe <farbname>
-  k4cglicht flackern [<wechselzeit>]
   k4cglicht farben
   k4cglicht alarm
   k4cglicht blaulicht
   k4cglicht alieninvasion
   k4cglicht dimmen <prozent>
   k4cglicht normal
+  k4cglicht zufall
   k4cglicht harmonisch ausrasten <dauer>
+  k4cglicht annoy <bulb> <times>
+
 Options:
   -h --help     HILFE!
   --version     FICKENDE VERSION!
