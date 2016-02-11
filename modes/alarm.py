@@ -8,8 +8,8 @@ class Alarm(Mode):
 
 
     @staticmethod
-    def name():
-        return "alarm"
+    def get_params():
+        return ('alarm', None)
 
     @staticmethod
     def execute(light_utils, args=None):

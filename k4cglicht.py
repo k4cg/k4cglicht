@@ -1,39 +1,62 @@
 #!/usr/bin/env python
-""" k4cglicht 0.0.2
 
-Usage:
-  k4cglicht farbe <farbname>
-  k4cglicht farben
-  k4cglicht alarm
-  k4cglicht blaulicht
-  k4cglicht alieninvasion
-  k4cglicht dimmen <prozent>
-  k4cglicht normal
-  k4cglicht zufall <dauer>
-  k4cglicht harmonisch ausrasten <dauer>
-  k4cglicht harmonisch
+def load_modes():
+    importdir.do("modes", globals())
+    modes = {}
+    for mode in Mode.__subclasses__():
+        params = mode.get_params()
+        try:
+            for name, option in params:
+                modes[name] = mode
+        except:
+            modes[params[0]] = mode
+    return modes
 
-Options:
-  -h --help     HILFE!
-  --version     FICKENDE VERSION!
+def init_parser(modes):
+    def add_arg(parser, name, option):
+        if not option:
+            parser.add_argument('--' + name, action='store_true')
+        else:
+            parser.add_argument('--' + name, metavar=option)
 
-"""
+    parser = ArgumentParser()
+    for mode in modes:
+        params = mode.get_params()
+        try:
+            for name, option in params:
+                add_arg(parser, name, option)
+        except:
+            add_arg(parser, params[0], params[1])
+    return parser
 
 import sys
-import random
 import json
-from docopt import docopt
+from argparse import ArgumentParser
 from vendor import importdir
 from mode import Mode
 from lightutils.LightUtils import LightUtils
 
 if __name__ == '__main__':
-    args = docopt(__doc__, version='k4cglicht 0.0.2')
+    modes = load_modes()
+    parser = init_parser(set(modes.values()))
+    args = parser.parse_args()
 
     config = []
     with open('config.json') as configFile:
         config = json.load(configFile)
-    lu = LightUtils(config)
+    lightutils = LightUtils(config)
+
+    for key, value in args.__dict__.iteritems():
+        if value:
+            print key, value
+            modes[key].execute(lightutils, value)
+
+
+
+
+    '''
+    args = docopt(__doc__, version='k4cglicht 0.0.2')
+
 
     # load modes
     importdir.do("modes", globals())
@@ -51,7 +74,6 @@ if __name__ == '__main__':
             mode.execute(lu, arguments)
             sys.exit(0)
     print("Mode not found")
-'''
     if args["farbe"]:
         #LICHT().set_light(args["<farbname>"])
         print('Bla')

@@ -1,11 +1,11 @@
 from mode import Mode
 
-class Default(Mode):
+class PrintColorList(Mode):
 
     @staticmethod
     def get_params():
-        return ('normal', None)
+        return ('farben', None)
 
     @staticmethod
     def execute(light_utils, argument=None):
-        light_utils.set_light("Moccasin", brightness=59, transition=10)
+        light_utils.print_all_colors()

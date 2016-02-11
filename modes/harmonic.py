@@ -6,12 +6,12 @@ import time
 class Harmonic(Mode):
 
     @staticmethod
-    def name():
-        return ['harmonisch ausrasten', 'harmonisch']
+    def get_params():
+        return [('harmonisch ausrasten', None), ('harmonisch', 'duration')]
 
     @staticmethod
-    def execute(light_utils, args=None):
-        length = 50 if not args else int(args.values()[0])
+    def execute(light_utils, argument=None):
+        length = 50 if not argument or argument is True else int(argument)
         for x in range(1, length):
             brightness = random.randrange(1,100)
             color = random.choice(light_utils.colors.keys())

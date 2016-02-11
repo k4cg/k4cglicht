@@ -1,11 +1,12 @@
-from beautifulhue.api import Bridge
+from BridgeWrapper import BridgeWrapper
 import time
+import sys
 
 class LightUtils(object):
 
     def __init__(self, config):
 
-        self.bridge = self.createBridge(config)
+        self.bridge_wrapper = BridgeWrapper(config)
         self.colors = \
             {
                 'Blue': [0.139, 0.081],
@@ -155,36 +156,6 @@ class LightUtils(object):
                 'Olive Drab': [0.354, 0.5561]
             }
 
-    def createBridge(self, config):
-        bridge = Bridge(device={'ip': config['bridgeip']}, user={
-                        'name': config['username']})
-
-        resource = {'which': 'system'}
-        response = bridge.config.get(resource)['resource']
-        if 'lights' in response:  # user is authorized
-            print('Connected to the hub')
-            return bridge
-        elif 'error' in response[0]:  # user is not authorized
-            error = response[0]['error']
-            if error['type'] == 1:
-                self.createConfig(bridge, config)
-
-        return bridge
-
-    def createConfig(self, bridge, config):
-        created = False
-        print('Press the button on the Hue bridge')
-        while not created:
-            resource = {'user': {'devicetype': config[
-                'devicetype'], 'name': config['username']}}
-            response = bridge.config.create(resource)['resource']
-            if 'error' in response[0]:
-                if response[0]['error']['type'] != 101:
-                    print('Unhandled error creating configuration on the Hue')
-                    sys.exit(response)
-                else:
-                    created = True
-
     # handy functions to the licht object
     def _get_color(self, colorname):
         """ Gets a color from self.colors by name
@@ -218,33 +189,17 @@ class LightUtils(object):
     def print_all_colors(self):
         """ Print out a list of all available colors
         in colormap. Used for help
-        :returns: bool
         """
         print("Alle verfuegbaren Farben:")
         for x, v in self.colors.iteritems():
             print x + ",",
         return True
 
-    def set_light(self, colorname, transition=1, brightness=100):
-        """ Set all options of a lightbulp
-        colorname: string (from colormap)
-        transition: float (number of seconds to switch to new configuration)
-        brightness: int (percentage of brightness 0-100)
-        :returns: bool
-        """
-        b = self._dimm_percentage(brightness)
-        xy = self._get_color(colorname)
-        resource = {'which':1, 'data':{'action':{'bri':brightness,'xy':xy,'transitiontime':transition}}}
-        self.update(self.bridge.group, resource)
-
     def dim_light(self, percent):
         """ Dim light. Give percentage of brightness.
-        :returns: bool
         """
         b = self._dimm_percentage(percent)
-        resource = {'which':1, 'data':{'action':{'bri':b,'transitiontime':7}}}
-        self.update(self.bridge.group, resource)
+        self.bridge_wrapper.set_group_brightness(b)
 
-    # @TODO:0 Extract Bridge/hue code to an extra class 'BridgeWrapper or something like that'
-    def update(self, to_update, resource):
-        to_update.update(resource)
+    def set_light(self, color, brightness=100, transition=1):
+        self.bridge_wrapper.set_group(self._get_color(color), brightness=self._dimm_percentage(brightness), transition=transition)

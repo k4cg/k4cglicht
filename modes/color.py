@@ -1,11 +1,11 @@
 from mode import Mode
 
-class Default(Mode):
+class Color(Mode):
 
     @staticmethod
     def get_params():
-        return ('normal', None)
+        return ('farbe', 'colorname')
 
     @staticmethod
     def execute(light_utils, argument=None):
-        light_utils.set_light("Moccasin", brightness=59, transition=10)
+        light_utils.set_light(argument)

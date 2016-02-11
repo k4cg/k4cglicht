@@ -3,9 +3,9 @@
 class Mode(object):
 
     @staticmethod
-    def name():
+    def get_params():
         pass
 
     @staticmethod
-    def execute(light_utils, args=None):
+    def execute(light_utils, argument=None):
         pass
