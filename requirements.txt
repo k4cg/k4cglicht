@@ -1,2 +1,2 @@
-phue
+beautifulhue
 docopt
