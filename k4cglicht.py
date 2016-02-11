@@ -19,7 +19,7 @@ def init_parser(modes):
         else:
             parser.add_argument('--' + name, metavar=option)
 
-    parser = ArgumentParser()
+    parser = ArgumentParser(prog='k4cglicht.py')
     for mode in modes:
         params = mode.get_params()
         try:
@@ -27,6 +27,7 @@ def init_parser(modes):
                 add_arg(parser, name, option)
         except:
             add_arg(parser, params[0], params[1])
+    parser.add_argument('-v', '--version', action='version', version='%(prog)s 0.1')
     return parser
 
 import sys
@@ -48,48 +49,4 @@ if __name__ == '__main__':
 
     for key, value in args.__dict__.iteritems():
         if value:
-            print key, value
             modes[key].execute(lightutils, value)
-
-
-
-
-    '''
-    args = docopt(__doc__, version='k4cglicht 0.0.2')
-
-
-    # load modes
-    importdir.do("modes", globals())
-    modes = [mode for mode in Mode.__subclasses__()]
-    mode_name = ''
-    arguments = {}
-    for key in args.keys():
-        if(args[key] and not key.startswith("<")):
-            mode_name = key
-        elif args[key] and key.startswith('<') :
-            arguments[key] = args[key]
-
-    for mode in modes:
-        if mode_name in mode.name():
-            mode.execute(lu, arguments)
-            sys.exit(0)
-    print("Mode not found")
-    if args["farbe"]:
-        #LICHT().set_light(args["<farbname>"])
-        print('Bla')
-    if args["farben"]:
-        LICHT().print_all_colors()
-    if args["alarm"]:
-        LICHT().alarm()
-    if args["blaulicht"]:
-        LICHT().blaulicht()
-    if args["dimmen"]:
-        LICHT().dim_light(args["<prozent>"])
-    if args["harmonisch"]:
-        d = int(args["<dauer>"])
-        LICHT().harmonisch_ausrasten(d)
-    if args["normal"]:
-        LICHT().default()
-    if args["zufall"] or args["alieninvasion"]:
-        LICHT().random_colors()
-'''

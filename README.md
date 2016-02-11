@@ -33,7 +33,6 @@ Options:
 
 * Initales pairen Link button druecken und innerhalb 30 Sekunden ausfuehren
 * Im moment nur aus der K4CG Triggerbar.
-* Kein IPv6 auf der Bridge
 * Helligkeit von 0 bis 254
 * Farben gehen von 0 bis 1. (0.11,0.12..0.98,0.99)
 * Einzelne Lichter sind in der list "lights"

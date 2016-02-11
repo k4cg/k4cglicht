@@ -203,3 +203,6 @@ class LightUtils(object):
 
     def set_light(self, color, brightness=100, transition=1):
         self.bridge_wrapper.set_group(self._get_color(color), brightness=self._dimm_percentage(brightness), transition=transition)
+
+    def set_color(self, xy, brightness=100, transition=1):
+        self.bridge_wrapper.set_group(xy, brightness=self._dimm_percentage(brightness), transition=transition)

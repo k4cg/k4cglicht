@@ -12,7 +12,7 @@ class Alarm(Mode):
         return ('alarm', None)
 
     @staticmethod
-    def execute(light_utils, args=None):
+    def execute(light_utils, argument=None):
         for x in range(1, 7):
             light_utils.set_light("Red")
             time.sleep(1)
